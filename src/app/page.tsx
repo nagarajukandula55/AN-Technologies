@@ -58,9 +58,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-500">
-        &copy; {new Date().getFullYear()} AN Technologies. All rights reserved.
-      </footer>
     </>
   );
 }

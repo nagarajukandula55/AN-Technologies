@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { PLANS } from "@/lib/lemonsqueezy";
+
+export const metadata: Metadata = {
+  title: "Pricing",
+  description: "Simple, transparent pricing for PDF, QR, and business tools. Free to start.",
+};
 
 export default function PricingPage() {
   return (
