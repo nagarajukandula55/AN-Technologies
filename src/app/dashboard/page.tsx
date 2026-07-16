@@ -27,12 +27,41 @@ export default async function DashboardPage() {
           </Link>
         )}
 
-        <div className="mt-10">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           <Link
             href="/tools"
-            className="inline-block rounded-lg border border-slate-200 px-6 py-4 font-medium hover:border-slate-400"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
           >
-            Browse all 20 tools →
+            <h2 className="font-semibold">All Tools</h2>
+            <p className="mt-1 text-sm text-slate-600">Browse all 20 free/paid utility tools</p>
+          </Link>
+          <Link
+            href="/crm"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">CRM</h2>
+            <p className="mt-1 text-sm text-slate-600">Track leads and customers</p>
+          </Link>
+          <Link
+            href="/inventory"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Inventory</h2>
+            <p className="mt-1 text-sm text-slate-600">Track stock levels and products</p>
+          </Link>
+          <Link
+            href="/expenses"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Expense Tracker</h2>
+            <p className="mt-1 text-sm text-slate-600">Log and categorize expenses</p>
+          </Link>
+          <Link
+            href="/projects"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Projects &amp; Tasks</h2>
+            <p className="mt-1 text-sm text-slate-600">Manage projects and to-dos</p>
           </Link>
         </div>
       </main>

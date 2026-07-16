@@ -21,6 +21,10 @@ model User {
   sessions      Session[]
   subscription  Subscription?
   toolUsages    ToolUsage[]
+  contacts      Contact[]
+  products      Product[]
+  expenses      Expense[]
+  projects      Project[]
 }
 
 model Account {
@@ -96,4 +100,90 @@ model ToolUsage {
   count     Int      @default(1)
 
   @@unique([userId, tool, date])
+}
+
+enum ContactStatus {
+  LEAD
+  CUSTOMER
+  INACTIVE
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  company   String?
+  status    ContactStatus @default(LEAD)
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  sku       String?
+  price     Float    @default(0)
+  stock     Int      @default(0)
+  lowStockAt Int     @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description String
+  category  String
+  amount    Float
+  date      DateTime @default(now()) @db.Date
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum ProjectStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+}
+
+model Project {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  status    ProjectStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+  tasks     Task[]
+
+  @@index([userId])
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Task {
+  id        String     @id @default(cuid())
+  projectId String
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  status    TaskStatus @default(TODO)
+  dueDate   DateTime?
+  createdAt DateTime   @default(now())
+
+  @@index([projectId])
 }
