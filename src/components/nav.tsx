@@ -13,11 +13,8 @@ export function Nav() {
           AN Technologies
         </Link>
         <nav className="flex items-center gap-6 text-sm">
-          <Link href="/tools/pdf" className="text-slate-600 hover:text-slate-900">
-            PDF Toolkit
-          </Link>
-          <Link href="/tools/qr" className="text-slate-600 hover:text-slate-900">
-            QR Generator
+          <Link href="/tools" className="text-slate-600 hover:text-slate-900">
+            All Tools
           </Link>
           <Link href="/pricing" className="text-slate-600 hover:text-slate-900">
             Pricing

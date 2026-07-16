@@ -5,12 +5,22 @@ const tools = [
   {
     href: "/tools/pdf",
     name: "PDF Toolkit",
-    desc: "Merge, split, and compress PDFs in your browser. No upload required.",
+    desc: "Merge and split PDFs in your browser. No upload required.",
   },
   {
     href: "/tools/qr",
     name: "QR & Barcode Generator",
-    desc: "Generate branded QR codes and barcodes instantly, export as PNG/SVG.",
+    desc: "Generate branded QR codes and barcodes instantly, export as PNG.",
+  },
+  {
+    href: "/tools/invoice",
+    name: "Invoice Generator",
+    desc: "Create professional PDF invoices in seconds.",
+  },
+  {
+    href: "/tools/image-compressor",
+    name: "Image Compressor",
+    desc: "Shrink image file size without leaving your browser.",
   },
 ];
 
@@ -43,7 +53,7 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-6xl px-6 pb-24">
-          <h2 className="mb-8 text-center text-2xl font-semibold">Tools</h2>
+          <h2 className="mb-8 text-center text-2xl font-semibold">Popular Tools</h2>
           <div className="grid gap-6 sm:grid-cols-2">
             {tools.map((tool) => (
               <Link
@@ -56,6 +66,11 @@ export default function Home() {
               </Link>
             ))}
           </div>
+          <p className="mt-8 text-center">
+            <Link href="/tools" className="text-sm font-medium underline">
+              View all tools →
+            </Link>
+          </p>
         </section>
       </main>
     </>
