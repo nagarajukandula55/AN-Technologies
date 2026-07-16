@@ -25,6 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/email-validator",
     "/tools/image-converter",
     "/tools/gst-calculator",
+    "/tools/api-tester",
+    "/tools/ocr",
     "/legal/terms",
     "/legal/privacy",
     "/legal/refund",

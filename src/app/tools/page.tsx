@@ -42,6 +42,8 @@ const categories = [
       { href: "/tools/csv-cleaner", name: "CSV Cleaner", desc: "Trim, deduplicate, and clean CSV data." },
       { href: "/tools/markdown-editor", name: "Markdown Editor", desc: "Write Markdown with a live preview." },
       { href: "/tools/email-validator", name: "Email Validator", desc: "Check email format validity in bulk." },
+      { href: "/tools/api-tester", name: "API Tester", desc: "Send HTTP requests and inspect responses." },
+      { href: "/tools/ocr", name: "OCR — Extract Text from Images", desc: "Pull text out of photos or scanned documents." },
     ],
   },
   {

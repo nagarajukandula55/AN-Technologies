@@ -27,20 +27,12 @@ export default async function DashboardPage() {
           </Link>
         )}
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10">
           <Link
-            href="/tools/pdf"
-            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+            href="/tools"
+            className="inline-block rounded-lg border border-slate-200 px-6 py-4 font-medium hover:border-slate-400"
           >
-            <h2 className="font-semibold">PDF Toolkit</h2>
-            <p className="mt-1 text-sm text-slate-600">Merge, split, compress PDFs</p>
-          </Link>
-          <Link
-            href="/tools/qr"
-            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
-          >
-            <h2 className="font-semibold">QR & Barcode Generator</h2>
-            <p className="mt-1 text-sm text-slate-600">Generate and export codes</p>
+            Browse all 20 tools →
           </Link>
         </div>
       </main>
