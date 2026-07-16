@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import type { PLANS } from "@/lib/stripe";
+import type { PLANS } from "@/lib/lemonsqueezy";
 
 export function UpgradeButton({ plan }: { plan: keyof typeof PLANS }) {
   const { data: session } = useSession();
@@ -16,7 +16,7 @@ export function UpgradeButton({ plan }: { plan: keyof typeof PLANS }) {
       return;
     }
     setLoading(true);
-    const res = await fetch("/api/stripe/checkout", {
+    const res = await fetch("/api/lemonsqueezy/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ plan }),

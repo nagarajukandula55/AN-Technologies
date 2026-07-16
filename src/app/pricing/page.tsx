@@ -1,6 +1,6 @@
 import { Nav } from "@/components/nav";
 import { UpgradeButton } from "@/components/upgrade-button";
-import { PLANS } from "@/lib/stripe";
+import { PLANS } from "@/lib/lemonsqueezy";
 
 export default function PricingPage() {
   return (

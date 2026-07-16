@@ -7,14 +7,15 @@ core (auth, subscriptions, paywall) and two live products:
 - **QR & Barcode Generator** (`/tools/qr`) — generate + export QR codes and barcodes
 
 Free tier: 3 operations/day per tool, watermarked output. Pro/Business tiers unlock unlimited,
-watermark-free usage via Stripe subscriptions.
+watermark-free usage via Lemon Squeezy subscriptions.
 
 ## Stack
 
 - **Frontend/Backend**: Next.js 16 (App Router), TypeScript, Tailwind CSS
 - **Auth**: NextAuth v5 (Google OAuth + email/password)
 - **Database**: PostgreSQL via Prisma ORM
-- **Payments**: Stripe Checkout + subscriptions
+- **Payments**: Lemon Squeezy Checkout + subscriptions (merchant of record — handles global tax/
+  VAT/GST and payouts to India without a registered business entity)
 - **Hosting**: Vercel (serverless-first — no long-running services required)
 
 ## Local development
@@ -34,7 +35,7 @@ Open http://localhost:3000.
 |---|---|---|
 | **Vercel** | Hosting | https://vercel.com/signup |
 | **Neon** or **Supabase** | Postgres database | https://neon.tech or https://supabase.com |
-| **Stripe** | Payments/subscriptions | https://dashboard.stripe.com/register |
+| **Lemon Squeezy** | Payments/subscriptions | https://app.lemonsqueezy.com/register |
 | **Google Cloud Console** (optional) | Google sign-in | https://console.cloud.google.com/apis/credentials |
 
 ### Environment variables
@@ -47,12 +48,13 @@ Copy `.env.example` to `.env` and fill in:
 - `NEXT_PUBLIC_APP_URL` — your deployed URL (e.g. `https://yourapp.vercel.app`)
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — optional, from Google Cloud Console (OAuth
   consent screen + credentials, redirect URI: `<APP_URL>/api/auth/callback/google`)
-- `STRIPE_SECRET_KEY` — from Stripe Dashboard → Developers → API keys
-- `STRIPE_WEBHOOK_SECRET` — from Stripe Dashboard → Developers → Webhooks (endpoint:
-  `<APP_URL>/api/stripe/webhook`, events: `checkout.session.completed`,
-  `customer.subscription.updated`, `customer.subscription.deleted`)
-- `STRIPE_PRICE_PRO` / `STRIPE_PRICE_BUSINESS` — create two recurring Products/Prices in Stripe
-  and paste their price IDs here
+- `LEMONSQUEEZY_API_KEY` — from Lemon Squeezy → Settings → API
+- `LEMONSQUEEZY_STORE_ID` — from Lemon Squeezy → Settings → Stores
+- `LEMONSQUEEZY_WEBHOOK_SECRET` — from Lemon Squeezy → Settings → Webhooks (endpoint:
+  `<APP_URL>/api/lemonsqueezy/webhook`, events: `subscription_created`,
+  `subscription_updated`, `subscription_cancelled`, `subscription_expired`)
+- `LEMONSQUEEZY_VARIANT_PRO` / `LEMONSQUEEZY_VARIANT_BUSINESS` — create two subscription
+  products in Lemon Squeezy and paste their variant IDs here
 
 ## Deploying to Vercel
 
@@ -66,8 +68,9 @@ Socket.io in the critical path, so there's nothing that needs a persistent serve
    `vercel.json` / `package.json`).
 5. After first deploy, run `npx prisma db push` locally (pointed at your production
    `DATABASE_URL`) to create tables, or wire it into a CI step.
-6. Add the Stripe webhook endpoint pointing at `https://<your-domain>/api/stripe/webhook` and
-   copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+6. Add the Lemon Squeezy webhook endpoint pointing at
+   `https://<your-domain>/api/lemonsqueezy/webhook` and copy the signing secret into
+   `LEMONSQUEEZY_WEBHOOK_SECRET`.
 7. Point your custom domain at the Vercel project (Project Settings → Domains) once you're ready
    to go live with a paid domain instead of the `*.vercel.app` subdomain.
 
