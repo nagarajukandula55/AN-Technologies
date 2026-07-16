@@ -63,6 +63,34 @@ export default async function DashboardPage() {
             <h2 className="font-semibold">Projects &amp; Tasks</h2>
             <p className="mt-1 text-sm text-slate-600">Manage projects and to-dos</p>
           </Link>
+          <Link
+            href="/helpdesk"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Helpdesk</h2>
+            <p className="mt-1 text-sm text-slate-600">Track support tickets</p>
+          </Link>
+          <Link
+            href="/appointments"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Appointment Booking</h2>
+            <p className="mt-1 text-sm text-slate-600">Schedule and track appointments</p>
+          </Link>
+          <Link
+            href="/quotations"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Quotation Management</h2>
+            <p className="mt-1 text-sm text-slate-600">Create, track, and print quotations</p>
+          </Link>
+          <Link
+            href="/vendors"
+            className="rounded-lg border border-slate-200 p-6 hover:border-slate-400"
+          >
+            <h2 className="font-semibold">Vendor Portal</h2>
+            <p className="mt-1 text-sm text-slate-600">Track suppliers and vendors</p>
+          </Link>
         </div>
       </main>
     </>
