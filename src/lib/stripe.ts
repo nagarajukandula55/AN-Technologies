@@ -1,8 +1,21 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2026-06-24.dahlia",
-});
+let _stripe: Stripe | null = null;
+
+// Lazily instantiated so the app can build/run without STRIPE_SECRET_KEY set
+// (e.g. before Stripe is configured); only routes that actually use Stripe
+// need the key at request time.
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error("STRIPE_SECRET_KEY is not set");
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2026-06-24.dahlia",
+    });
+  }
+  return _stripe;
+}
 
 export const PLANS = {
   PRO: {

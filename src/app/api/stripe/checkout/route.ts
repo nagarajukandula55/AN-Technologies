@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { stripe, PLANS } from "@/lib/stripe";
+import { getStripe, PLANS } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -15,6 +15,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
   }
 
+  const stripe = getStripe();
   let sub = await prisma.subscription.findUnique({ where: { userId: session.user.id } });
 
   let customerId = sub?.stripeCustomerId;
