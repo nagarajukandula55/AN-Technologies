@@ -31,6 +31,10 @@ model User {
   vendors       Vendor[]
   employees     Employee[]
   assets        Asset[]
+  complaints    Complaint[]
+  deals         Deal[]
+  contracts     Contract[]
+  repairTickets RepairTicket[]
 }
 
 model Account {
@@ -359,6 +363,97 @@ model Asset {
   purchaseDate DateTime?   @db.Date
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
+  @@index([userId])
+}
+
+enum ComplaintStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+}
+
+model Complaint {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  complainantName String
+  subject         String
+  description     String?
+  status          ComplaintStatus @default(OPEN)
+  resolutionNotes String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([userId])
+}
+
+enum DealStage {
+  NEW
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model Deal {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  clientName        String
+  value             Float     @default(0)
+  stage             DealStage @default(NEW)
+  expectedCloseDate DateTime? @db.Date
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  TERMINATED
+}
+
+model Contract {
+  id           String         @id @default(cuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  counterparty String
+  startDate    DateTime       @db.Date
+  endDate      DateTime?      @db.Date
+  value        Float          @default(0)
+  status       ContractStatus @default(DRAFT)
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+enum RepairStatus {
+  RECEIVED
+  IN_PROGRESS
+  COMPLETED
+  DELIVERED
+}
+
+model RepairTicket {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemName    String
+  customerName String
+  issue       String
+  cost        Float        @default(0)
+  status      RepairStatus @default(RECEIVED)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([userId])
 }

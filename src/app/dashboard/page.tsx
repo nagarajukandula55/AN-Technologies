@@ -9,7 +9,9 @@ const categories = [
     name: "Sales & Customers",
     apps: [
       { href: "/crm", name: "CRM", desc: "Track leads and customers" },
+      { href: "/sales-pipeline", name: "Sales Pipeline", desc: "Kanban board for deals in progress" },
       { href: "/quotations", name: "Quotation Management", desc: "Create, track, and print quotations" },
+      { href: "/contracts", name: "Contract Management", desc: "Track contracts and their status" },
       { href: "/vendors", name: "Vendor Portal", desc: "Track suppliers and vendors" },
     ],
   },
@@ -19,6 +21,8 @@ const categories = [
       { href: "/inventory", name: "Inventory", desc: "Track stock levels and products" },
       { href: "/projects", name: "Projects & Tasks", desc: "Manage projects and to-dos" },
       { href: "/helpdesk", name: "Helpdesk", desc: "Track support tickets" },
+      { href: "/complaints", name: "Complaint Management", desc: "Log and resolve customer complaints" },
+      { href: "/repairs", name: "Repair Management", desc: "Track items in for repair" },
       { href: "/appointments", name: "Appointment Booking", desc: "Schedule and track appointments" },
     ],
   },
