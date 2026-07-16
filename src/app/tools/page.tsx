@@ -12,7 +12,11 @@ const categories = [
     name: "Documents",
     tools: [
       { href: "/tools/pdf", name: "PDF Toolkit", desc: "Merge and split PDFs in your browser." },
-      { href: "/tools/invoice", name: "Invoice Generator", desc: "Create professional PDF invoices." },
+      {
+        href: "/tools/invoice",
+        name: "Invoice, Estimate, Receipt & PO Generator",
+        desc: "Print or download invoices, estimates, receipts, purchase orders, and delivery notes.",
+      },
       { href: "/tools/resume", name: "Resume Builder", desc: "Build a clean PDF resume." },
       { href: "/tools/signature", name: "Signature Generator", desc: "Draw or type a signature, export as PNG." },
     ],

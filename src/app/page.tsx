@@ -14,8 +14,8 @@ const tools = [
   },
   {
     href: "/tools/invoice",
-    name: "Invoice Generator",
-    desc: "Create professional PDF invoices in seconds.",
+    name: "Invoice & Estimate Generator",
+    desc: "Print or download invoices, estimates, receipts, and more.",
   },
   {
     href: "/tools/image-compressor",
