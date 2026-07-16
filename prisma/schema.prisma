@@ -29,6 +29,8 @@ model User {
   appointments  Appointment[]
   quotations    Quotation[]
   vendors       Vendor[]
+  employees     Employee[]
+  assets        Asset[]
 }
 
 model Account {
@@ -274,6 +276,89 @@ model Vendor {
   notes     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Employee {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  email       String?
+  designation String?
+  department  String?
+  monthlySalary Float           @default(0)
+  joinDate    DateTime          @default(now()) @db.Date
+  status      EmployeeStatus    @default(ACTIVE)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  attendance  AttendanceRecord[]
+  payslips    Payslip[]
+  assets      Asset[]
+
+  @@index([userId])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+  LEAVE
+}
+
+model AttendanceRecord {
+  id         String           @id @default(cuid())
+  employeeId String
+  employee   Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       DateTime         @db.Date
+  status     AttendanceStatus @default(PRESENT)
+  createdAt  DateTime         @default(now())
+
+  @@unique([employeeId, date])
+  @@index([employeeId])
+}
+
+model Payslip {
+  id           String   @id @default(cuid())
+  employeeId   String
+  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month        String
+  basicSalary  Float
+  deductions   Float    @default(0)
+  netPay       Float
+  createdAt    DateTime @default(now())
+
+  @@unique([employeeId, month])
+  @@index([employeeId])
+}
+
+enum AssetStatus {
+  IN_USE
+  IN_STORAGE
+  RETIRED
+}
+
+model Asset {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  category     String?
+  serialNumber String?
+  value        Float       @default(0)
+  status       AssetStatus @default(IN_STORAGE)
+  assignedToId String?
+  assignedTo   Employee?   @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  purchaseDate DateTime?   @db.Date
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@index([userId])
 }
