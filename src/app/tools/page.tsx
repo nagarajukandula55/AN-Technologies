@@ -28,6 +28,7 @@ const categories = [
       { href: "/tools/image-compressor", name: "Image Compressor", desc: "Shrink image file size." },
       { href: "/tools/watermark", name: "Watermark Tool", desc: "Add a text watermark to images." },
       { href: "/tools/qr", name: "QR & Barcode Generator", desc: "Generate and export QR codes and barcodes." },
+      { href: "/tools/image-converter", name: "Image Format Converter", desc: "Convert between PNG, JPEG, and WebP." },
     ],
   },
   {
@@ -37,6 +38,16 @@ const categories = [
       { href: "/tools/base64", name: "Base64 Encoder / Decoder", desc: "Encode or decode Base64 text." },
       { href: "/tools/password-generator", name: "Password Generator", desc: "Generate strong random passwords." },
       { href: "/tools/color-picker", name: "Color Picker", desc: "Pick colors and generate a shade palette." },
+      { href: "/tools/text-compare", name: "Text Compare", desc: "Compare two blocks of text line by line." },
+      { href: "/tools/csv-cleaner", name: "CSV Cleaner", desc: "Trim, deduplicate, and clean CSV data." },
+      { href: "/tools/markdown-editor", name: "Markdown Editor", desc: "Write Markdown with a live preview." },
+      { href: "/tools/email-validator", name: "Email Validator", desc: "Check email format validity in bulk." },
+    ],
+  },
+  {
+    name: "Business",
+    tools: [
+      { href: "/tools/gst-calculator", name: "GST Calculator", desc: "Calculate CGST/SGST/IGST breakdowns." },
     ],
   },
 ];
