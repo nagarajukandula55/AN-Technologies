@@ -6,9 +6,8 @@ export const PLANS = {
     variantId: process.env.LEMONSQUEEZY_VARIANT_PRO ?? "",
     price: 9,
     features: [
-      "Unlimited PDF operations",
-      "Unlimited QR/Barcode generation",
-      "No watermark",
+      "Unlimited use of every tool",
+      "No watermark on any export",
       "Priority support",
     ],
   },
