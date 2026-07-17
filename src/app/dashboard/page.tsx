@@ -49,6 +49,14 @@ const categories = [
       { href: "/bookings", name: "Booking System", desc: "Manage service bookings" },
     ],
   },
+  {
+    name: "Analytics & Admin",
+    apps: [
+      { href: "/analytics", name: "Analytics Dashboard", desc: "Track key business metrics" },
+      { href: "/team", name: "Team Management", desc: "Manage team members and roles" },
+      { href: "/reports", name: "Reports", desc: "Generate and manage reports" },
+    ],
+  },
 ];
 
 export default async function DashboardPage() {
