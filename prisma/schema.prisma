@@ -49,6 +49,8 @@ model User {
   settings      UserSettings?
   subscriptions SubscriptionPlan[]
   workflows     Workflow[]
+  entitlements  Entitlement[]
+  consents      ConsentRecord[]
 }
 
 model Account {
@@ -112,6 +114,121 @@ model Subscription {
   currentPeriodEnd       DateTime?
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
+}
+
+// A sellable catalog entry - a single tool (PDF Toolkit) or a full product (AN Dev Studio).
+// Per-listing pricing replaces a single global tier for anything sold individually.
+enum ListingKind {
+  TOOL
+  PRODUCT
+}
+
+enum BillingInterval {
+  ONE_TIME
+  MONTHLY
+  YEARLY
+}
+
+model Listing {
+  id              String            @id @default(cuid())
+  slug            String            @unique
+  name            String
+  kind            ListingKind
+  description     String?
+  priceCents      Int
+  currency        String            @default("USD")
+  billingInterval BillingInterval   @default(MONTHLY)
+  lsVariantId     String?
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  entitlements    Entitlement[]
+  bundleItems     BundleListing[]
+
+  @@index([kind])
+}
+
+// A discounted group of listings sold as one purchase (e.g. "Everything Bundle").
+model Bundle {
+  id              String            @id @default(cuid())
+  slug            String            @unique
+  name            String
+  description     String?
+  priceCents      Int
+  currency        String            @default("USD")
+  billingInterval BillingInterval   @default(MONTHLY)
+  lsVariantId     String?
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  listings        BundleListing[]
+}
+
+model BundleListing {
+  id        String  @id @default(cuid())
+  bundleId  String
+  bundle    Bundle  @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([bundleId, listingId])
+}
+
+enum EntitlementSource {
+  LISTING_PURCHASE
+  BUNDLE_PURCHASE
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+// What a user actually owns - one row per listing they've purchased access to,
+// whether bought directly or unlocked via a bundle. This, not `Subscription.tier`,
+// is the source of truth once a listing has its own price.
+model Entitlement {
+  id               String            @id @default(cuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId        String
+  listing          Listing           @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  source           EntitlementSource
+  status           EntitlementStatus @default(ACTIVE)
+  lsSubscriptionId String?
+  lsOrderId        String?
+  currentPeriodEnd DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([userId, listingId])
+  @@index([userId])
+}
+
+enum ConsentPurpose {
+  ANU_TRAINING
+  PRODUCT_ANALYTICS
+  MARKETING_EMAIL
+}
+
+// Explicit, timestamped, revocable consent per user per data-use purpose.
+// Never implied by signup or purchase - checked before any collection for that purpose.
+model ConsentRecord {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose    ConsentPurpose
+  granted    Boolean
+  grantedAt  DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@unique([userId, purpose])
+  @@index([userId])
 }
 
 // Tracks free-tier daily usage per tool to enforce paywall limits.
