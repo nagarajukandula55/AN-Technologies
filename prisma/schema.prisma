@@ -37,6 +37,9 @@ model User {
   repairTickets RepairTicket[]
   transactions  Transaction[]
   articles      Article[]
+  invoices      Invoice[]
+  timeEntries   TimeEntry[]
+  campaigns     Campaign[]
 }
 
 model Account {
@@ -496,5 +499,73 @@ model Article {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, slug])
+  @@index([userId])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoiceNumber String
+  clientName    String
+  clientEmail   String?
+  items         Json
+  subtotal      Float         @default(0)
+  tax           Float         @default(0)
+  total         Float         @default(0)
+  dueDate       DateTime?     @db.Date
+  status        InvoiceStatus @default(DRAFT)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+enum TimeEntryStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model TimeEntry {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectName String
+  taskName    String
+  hours       Float            @default(0)
+  date        DateTime         @db.Date
+  description String?
+  status      TimeEntryStatus  @default(COMPLETED)
+  billable    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([userId])
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  subject     String
+  recipients  Json
+  status      String   @default("DRAFT")
+  sentAt      DateTime?
+  openCount   Int      @default(0)
+  clickCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   @@index([userId])
 }

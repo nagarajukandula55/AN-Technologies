@@ -41,6 +41,9 @@ const categories = [
     apps: [
       { href: "/pos", name: "Point of Sale", desc: "Process sales transactions" },
       { href: "/knowledge-base", name: "Knowledge Base", desc: "Create and manage articles" },
+      { href: "/invoicing", name: "Invoicing", desc: "Create and track invoices" },
+      { href: "/time-tracking", name: "Time Tracking", desc: "Log and track billable hours" },
+      { href: "/campaigns", name: "Email Campaigns", desc: "Manage email marketing campaigns" },
     ],
   },
 ];
