@@ -36,6 +36,13 @@ const categories = [
       { href: "/expenses", name: "Expense Tracker", desc: "Log and categorize expenses" },
     ],
   },
+  {
+    name: "Commerce & Content",
+    apps: [
+      { href: "/pos", name: "Point of Sale", desc: "Process sales transactions" },
+      { href: "/knowledge-base", name: "Knowledge Base", desc: "Create and manage articles" },
+    ],
+  },
 ];
 
 export default async function DashboardPage() {

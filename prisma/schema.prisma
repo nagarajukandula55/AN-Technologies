@@ -35,6 +35,8 @@ model User {
   deals         Deal[]
   contracts     Contract[]
   repairTickets RepairTicket[]
+  transactions  Transaction[]
+  articles      Article[]
 }
 
 model Account {
@@ -455,5 +457,44 @@ model RepairTicket {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
+  @@index([userId])
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Transaction {
+  id            String              @id @default(cuid())
+  userId        String
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customerName  String?
+  items         Json
+  subtotal      Float               @default(0)
+  tax           Float               @default(0)
+  total         Float               @default(0)
+  paymentMethod String?
+  status        TransactionStatus   @default(COMPLETED)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([userId])
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  slug      String
+  content   String   @db.Text
+  category  String?
+  status    String   @default("PUBLISHED")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, slug])
   @@index([userId])
 }
