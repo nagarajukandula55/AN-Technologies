@@ -46,6 +46,9 @@ model User {
   analyticsData AnalyticsData[]
   teamMembers   TeamMember[]
   reports       Report[]
+  settings      UserSettings?
+  subscriptions SubscriptionPlan[]
+  workflows     Workflow[]
 }
 
 model Account {
@@ -666,6 +669,53 @@ model Report {
   generatedAt DateTime @default(now())
   status      String   @default("DRAFT")
   createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model UserSettings {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme              String   @default("LIGHT")
+  timezone           String   @default("UTC")
+  language           String   @default("EN")
+  notificationsEmail Boolean  @default(true)
+  notificationsSms   Boolean  @default(false)
+  twoFactorEnabled   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  price       Float
+  interval    String
+  features    Json
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Workflow {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  trigger      String
+  actions      Json
+  isActive     Boolean  @default(true)
+  executionLog Json     @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([userId])
 }
