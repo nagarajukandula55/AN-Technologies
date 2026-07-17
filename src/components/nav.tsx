@@ -16,6 +16,9 @@ export function Nav() {
           <Link href="/tools" className="text-slate-600 hover:text-slate-900">
             All Tools
           </Link>
+          <Link href="/marketplace" className="text-slate-600 hover:text-slate-900">
+            Marketplace
+          </Link>
           <Link href="/pricing" className="text-slate-600 hover:text-slate-900">
             Pricing
           </Link>
