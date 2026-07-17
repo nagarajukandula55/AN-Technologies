@@ -44,6 +44,9 @@ const categories = [
       { href: "/invoicing", name: "Invoicing", desc: "Create and track invoices" },
       { href: "/time-tracking", name: "Time Tracking", desc: "Log and track billable hours" },
       { href: "/campaigns", name: "Email Campaigns", desc: "Manage email marketing campaigns" },
+      { href: "/documents", name: "Document Management", desc: "Organize and manage files" },
+      { href: "/surveys", name: "Surveys & Feedback", desc: "Create customer surveys" },
+      { href: "/bookings", name: "Booking System", desc: "Manage service bookings" },
     ],
   },
 ];
