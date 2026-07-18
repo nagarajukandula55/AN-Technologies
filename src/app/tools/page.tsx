@@ -59,9 +59,12 @@ export default function ToolsIndexPage() {
     <>
       <Nav />
       <main className="mx-auto max-w-6xl flex-1 px-6 py-16">
-        <h1 className="text-3xl font-bold">All Tools</h1>
+        <h1 className="text-3xl font-bold text-slate-900">All Tools</h1>
         <p className="mt-2 text-slate-600">
-          Every tool runs entirely in your browser — nothing you upload is sent to our servers.
+          Every tool runs entirely in your browser — nothing you upload is sent to our servers.{" "}
+          <Link href="/marketplace" className="font-medium text-indigo-600 hover:text-indigo-700">
+            See pricing in the Marketplace →
+          </Link>
         </p>
 
         {categories.map((category) => (
@@ -72,9 +75,9 @@ export default function ToolsIndexPage() {
                 <Link
                   key={tool.href}
                   href={tool.href}
-                  className="rounded-lg border border-slate-200 p-5 transition hover:border-slate-400 hover:shadow-sm"
+                  className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
                 >
-                  <h3 className="font-semibold">{tool.name}</h3>
+                  <h3 className="font-semibold text-slate-900">{tool.name}</h3>
                   <p className="mt-1 text-sm text-slate-600">{tool.desc}</p>
                 </Link>
               ))}

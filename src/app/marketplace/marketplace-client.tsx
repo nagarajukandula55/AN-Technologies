@@ -73,7 +73,13 @@ export function MarketplaceClient() {
   }
 
   if (loading) {
-    return <p className="mt-12 text-center text-slate-500">Loading catalog…</p>;
+    return (
+      <div className="mt-12 grid gap-6 sm:grid-cols-3">
+        {[0, 1, 2, 3, 5, 6].map((i) => (
+          <div key={i} className="h-40 animate-pulse rounded-2xl border border-slate-200 bg-slate-50" />
+        ))}
+      </div>
+    );
   }
 
   const tools = listings.filter((listing) => listing.kind === "TOOL");
@@ -83,35 +89,58 @@ export function MarketplaceClient() {
     <div className="mt-12 space-y-16">
       {bundles.length > 0 && (
         <section>
-          <h2 className="text-xl font-semibold">Bundles</h2>
-          <p className="mt-1 text-sm text-slate-600">Everything at a discount vs. buying separately.</p>
+          <SectionHeader icon="🎁" title="Bundles" subtitle="Everything at a discount vs. buying separately." />
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {bundles.map((bundle) => (
-              <div key={bundle.slug} className="rounded-lg border-2 border-slate-900 p-6">
-                <h3 className="text-lg font-semibold">{bundle.name}</h3>
-                <p className="mt-1 text-sm text-slate-600">{bundle.description}</p>
-                <p className="mt-4 text-3xl font-bold">
-                  {formatPrice(bundle.priceCents, bundle.currency, bundle.billingInterval)}
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  Includes {bundle.listingSlugs.length} listing{bundle.listingSlugs.length === 1 ? "" : "s"}
-                </p>
-                <button
-                  onClick={() => buy({ bundleSlug: bundle.slug })}
-                  disabled={pendingSlug === bundle.slug}
-                  className="mt-4 w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-700 disabled:opacity-50"
+            {bundles.map((bundle) => {
+              const includedListings = listings.filter((l) => bundle.listingSlugs.includes(l.slug));
+              const separatePriceCents = includedListings.reduce((sum, l) => sum + l.priceCents, 0);
+              const savingsPercent =
+                separatePriceCents > 0
+                  ? Math.round(((separatePriceCents - bundle.priceCents) / separatePriceCents) * 100)
+                  : 0;
+
+              return (
+                <div
+                  key={bundle.slug}
+                  className="relative overflow-hidden rounded-2xl border-2 border-indigo-600 bg-gradient-to-br from-indigo-50 via-white to-white p-6 shadow-md shadow-indigo-100"
                 >
-                  {pendingSlug === bundle.slug ? "Redirecting…" : "Get bundle"}
-                </button>
-              </div>
-            ))}
+                  {savingsPercent > 0 && (
+                    <span className="absolute right-5 top-5 rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                      Save {savingsPercent}%
+                    </span>
+                  )}
+                  <h3 className="pr-20 text-lg font-semibold text-slate-900">{bundle.name}</h3>
+                  <p className="mt-1 text-sm text-slate-600">{bundle.description}</p>
+                  <div className="mt-4 flex items-baseline gap-2">
+                    <p className="text-3xl font-bold text-slate-900">
+                      {formatPrice(bundle.priceCents, bundle.currency, bundle.billingInterval)}
+                    </p>
+                    {separatePriceCents > bundle.priceCents && (
+                      <p className="text-sm text-slate-400 line-through">
+                        {formatPrice(separatePriceCents, bundle.currency, bundle.billingInterval)}
+                      </p>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs font-medium text-slate-500">
+                    Includes {bundle.listingSlugs.length} listing{bundle.listingSlugs.length === 1 ? "" : "s"}
+                  </p>
+                  <button
+                    onClick={() => buy({ bundleSlug: bundle.slug })}
+                    disabled={pendingSlug === bundle.slug}
+                    className="mt-5 w-full rounded-full bg-indigo-600 px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-50"
+                  >
+                    {pendingSlug === bundle.slug ? "Redirecting…" : "Get bundle"}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
 
       {products.length > 0 && (
         <section>
-          <h2 className="text-xl font-semibold">Products</h2>
+          <SectionHeader icon="🧩" title="Products" subtitle="Full products, priced on their own." />
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {products.map((listing) => (
               <ListingCard key={listing.slug} listing={listing} onBuy={buy} pending={pendingSlug === listing.slug} />
@@ -122,8 +151,7 @@ export function MarketplaceClient() {
 
       {tools.length > 0 && (
         <section>
-          <h2 className="text-xl font-semibold">Tools</h2>
-          <p className="mt-1 text-sm text-slate-600">Buy only what you need, priced per tool.</p>
+          <SectionHeader icon="🛠️" title="Tools" subtitle="Buy only what you need, priced per tool." />
           <div className="mt-6 grid gap-6 sm:grid-cols-3">
             {tools.map((listing) => (
               <ListingCard key={listing.slug} listing={listing} onBuy={buy} pending={pendingSlug === listing.slug} />
@@ -131,6 +159,18 @@ export function MarketplaceClient() {
           </div>
         </section>
       )}
+    </div>
+  );
+}
+
+function SectionHeader({ icon, title, subtitle }: { icon: string; title: string; subtitle: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-lg">{icon}</span>
+      <div>
+        <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
+        <p className="text-sm text-slate-600">{subtitle}</p>
+      </div>
     </div>
   );
 }
@@ -145,21 +185,21 @@ function ListingCard({
   pending: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 p-6">
-      <h3 className="font-semibold">{listing.name}</h3>
-      {listing.description && <p className="mt-1 text-sm text-slate-600">{listing.description}</p>}
-      <p className="mt-4 text-2xl font-bold">
+    <div className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md">
+      <h3 className="font-semibold text-slate-900 group-hover:text-indigo-700">{listing.name}</h3>
+      {listing.description && <p className="mt-1 flex-1 text-sm text-slate-600">{listing.description}</p>}
+      <p className="mt-4 text-2xl font-bold text-slate-900">
         {formatPrice(listing.priceCents, listing.currency, listing.billingInterval)}
       </p>
       {listing.owned ? (
-        <span className="mt-4 inline-block rounded-md bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
-          Owned
+        <span className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+          ✓ Owned
         </span>
       ) : (
         <button
           onClick={() => onBuy({ listingSlug: listing.slug })}
           disabled={pending}
-          className="mt-4 w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-700 disabled:opacity-50"
+          className="mt-4 w-full rounded-full bg-slate-900 px-4 py-2 font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50"
         >
           {pending ? "Redirecting…" : "Buy"}
         </button>

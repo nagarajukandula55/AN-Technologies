@@ -12,6 +12,7 @@ const UTILITY_TOOL_PRICE_CENTS = 400;
 // One listing per page under src/app/tools/<slug> - these were previously gated by a single
 // blanket Free/Pro/Business tier; each now has its own price and can be bought individually.
 const UTILITY_TOOLS: Array<{ slug: string; name: string; description: string }> = [
+  { slug: "api-tester", name: "API Tester", description: "Send HTTP requests and inspect responses, fully in-browser." },
   { slug: "pdf-toolkit", name: "PDF Toolkit", description: "Merge/split PDFs, fully client-side." },
   { slug: "qr-barcode-generator", name: "QR & Barcode Generator", description: "Generate and export QR codes and barcodes." },
   { slug: "base64", name: "Base64 Encoder/Decoder", description: "Encode and decode Base64 text and files." },
