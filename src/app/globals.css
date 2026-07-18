@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
+/* Light theme only, deliberately - no @media (prefers-color-scheme: dark)
+   override. A marketplace selling to visitors who haven't set preferences
+   on this specific site should render consistently regardless of their OS
+   theme, not silently flip to an unstyled dark mode nothing here is
+   designed for. */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+
+  /* Brand accent - indigo, used across CTAs, active nav states, and the
+     marketplace's bundle/highlight cards. */
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
 }
 
 @theme inline {
@@ -12,17 +25,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
 @media print {

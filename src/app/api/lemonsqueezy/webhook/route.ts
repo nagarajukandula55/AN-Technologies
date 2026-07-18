@@ -41,9 +41,15 @@ export async function POST(req: Request) {
 
   const payload = JSON.parse(rawBody);
   const eventName = payload.meta?.event_name as string | undefined;
-  const customData = payload.meta?.custom_data as { user_id?: string; plan?: PlanTier } | undefined;
+  const customData = payload.meta?.custom_data as
+    | { user_id?: string; plan?: PlanTier; listing_slug?: string; bundle_slug?: string }
+    | undefined;
   const attributes = payload.data?.attributes ?? {};
   const lsSubscriptionId = payload.data?.id as string | undefined;
+
+  if (eventName?.startsWith("subscription_") && lsSubscriptionId && (customData?.listing_slug || customData?.bundle_slug)) {
+    return handleListingOrBundleSubscription(customData, attributes, lsSubscriptionId, mapStatus(attributes.status as string));
+  }
 
   if (!eventName?.startsWith("subscription_") || !lsSubscriptionId) {
     return NextResponse.json({ received: true });
@@ -85,6 +91,47 @@ export async function POST(req: Request) {
         },
       });
     }
+  }
+
+  return NextResponse.json({ received: true });
+}
+
+// A single listing (e.g. AN Dev Studio sold on its own) or a bundle purchase.
+// A bundle grants one Entitlement per listing it contains, so `hasListingEntitlement`
+// never needs to walk the bundle graph at check time.
+async function handleListingOrBundleSubscription(
+  customData: { user_id?: string; listing_slug?: string; bundle_slug?: string },
+  attributes: Record<string, unknown>,
+  lsSubscriptionId: string,
+  status: SubscriptionStatus,
+) {
+  const userId = customData.user_id;
+  if (!userId) return NextResponse.json({ received: true });
+
+  const entitlementStatus = status === "ACTIVE" || status === "TRIALING" ? "ACTIVE" : status === "CANCELED" ? "CANCELED" : "ACTIVE";
+  const currentPeriodEnd = attributes.renews_at ? new Date(attributes.renews_at as string) : null;
+  const lsOrderId = attributes.order_id ? String(attributes.order_id) : undefined;
+
+  let listingIds: string[] = [];
+  if (customData.listing_slug) {
+    const listing = await prisma.listing.findUnique({ where: { slug: customData.listing_slug } });
+    if (listing) listingIds = [listing.id];
+  } else if (customData.bundle_slug) {
+    const bundle = await prisma.bundle.findUnique({
+      where: { slug: customData.bundle_slug },
+      include: { listings: true },
+    });
+    if (bundle) listingIds = bundle.listings.map((item) => item.listingId);
+  }
+
+  const source = customData.listing_slug ? "LISTING_PURCHASE" : "BUNDLE_PURCHASE";
+
+  for (const listingId of listingIds) {
+    await prisma.entitlement.upsert({
+      where: { userId_listingId: { userId, listingId } },
+      update: { status: entitlementStatus, currentPeriodEnd, lsSubscriptionId, lsOrderId },
+      create: { userId, listingId, source, status: entitlementStatus, currentPeriodEnd, lsSubscriptionId, lsOrderId },
+    });
   }
 
   return NextResponse.json({ received: true });

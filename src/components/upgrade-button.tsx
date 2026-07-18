@@ -30,7 +30,7 @@ export function UpgradeButton({ plan }: { plan: keyof typeof PLANS }) {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="mt-6 w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-700 disabled:opacity-50"
+      className="mt-6 w-full rounded-full bg-indigo-600 px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-50"
     >
       {loading ? "Redirecting…" : "Upgrade"}
     </button>
