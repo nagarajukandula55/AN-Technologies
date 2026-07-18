@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getBearerUser } from "@/lib/mobileAuth";
 
 const createSchema = z.object({
   metric: z.string().min(1).max(100),
@@ -9,12 +10,22 @@ const createSchema = z.object({
   source: z.string().optional(),
 });
 
-export async function GET() {
+// Bearer fallback so mobile clients (ANu) that authenticated via
+// /api/mobile-auth/login (no cookie jar available) can call this route
+// too, same convention ANgroup's middleware.ts added for its own mobile
+// apps. Cookie session stays primary/unaffected for the web app.
+async function getAuthedUserId(req: Request): Promise<string | null> {
   const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session?.user?.id) return session.user.id;
+  return getBearerUser(req)?.id ?? null;
+}
+
+export async function GET(req: Request) {
+  const userId = await getAuthedUserId(req);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await prisma.analyticsData.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     orderBy: { date: "desc" },
     take: 100,
   });
@@ -22,8 +33,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = await getAuthedUserId(req);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
@@ -31,7 +42,7 @@ export async function POST(req: Request) {
 
   const analytics = await prisma.analyticsData.create({
     data: {
-      userId: session.user.id,
+      userId,
       metric: parsed.data.metric,
       value: parsed.data.value,
       source: parsed.data.source,
