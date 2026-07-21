@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { TierBadge } from "./tier-badge";
 
 export function Nav() {
   const { data: session, status } = useSession();
@@ -29,6 +30,7 @@ export function Nav() {
           </Link>
           {status === "authenticated" && session?.user ? (
             <>
+              <TierBadge />
               <Link href="/dashboard" className="text-slate-600 transition hover:text-slate-900">
                 Dashboard
               </Link>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireBusinessTier } from "@/lib/entitlements";
 
 const createSchema = z.object({
   invoiceNumber: z.string().min(1).max(50),
@@ -23,6 +24,9 @@ const createSchema = z.object({
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  
+  const tierError = await requireBusinessTier(session.user.id);
+  if (tierError) return tierError;
 
   const invoices = await prisma.invoice.findMany({
     where: { userId: session.user.id },
@@ -34,6 +38,9 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  
+  const tierError = await requireBusinessTier(session.user.id);
+  if (tierError) return tierError;
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);

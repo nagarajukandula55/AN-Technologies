@@ -56,6 +56,7 @@ const categories = [
       { href: "/team", name: "Team Management", desc: "Manage team members and roles" },
       { href: "/reports", name: "Reports", desc: "Generate and manage reports" },
       { href: "/settings", name: "Settings", desc: "Manage account preferences" },
+      { href: "/billing", name: "Billing & Account", desc: "Manage subscription and billing" },
       { href: "/subscriptions", name: "Subscriptions", desc: "Create subscription plans" },
       { href: "/workflows", name: "Workflows", desc: "Automate business processes" },
     ],

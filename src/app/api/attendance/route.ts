@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireBusinessTier } from "@/lib/entitlements";
 
 export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  
+  const tierError = await requireBusinessTier(session.user.id);
+  if (tierError) return tierError;
 
   const { searchParams } = new URL(req.url);
   const dateParam = searchParams.get("date") ?? new Date().toISOString().slice(0, 10);
@@ -35,6 +39,9 @@ const upsertSchema = z.object({
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  
+  const tierError = await requireBusinessTier(session.user.id);
+  if (tierError) return tierError;
 
   const body = await req.json();
   const parsed = upsertSchema.safeParse(body);

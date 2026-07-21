@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBearerUser } from "@/lib/mobileAuth";
+import { requireBusinessTier } from "@/lib/entitlements";
 
 const createSchema = z.object({
   metric: z.string().min(1).max(100),
@@ -24,6 +25,9 @@ export async function GET(req: Request) {
   const userId = await getAuthedUserId(req);
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const tierError = await requireBusinessTier(userId);
+  if (tierError) return tierError;
+
   const data = await prisma.analyticsData.findMany({
     where: { userId },
     orderBy: { date: "desc" },
@@ -35,6 +39,9 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const userId = await getAuthedUserId(req);
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const tierError = await requireBusinessTier(userId);
+  if (tierError) return tierError;
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);

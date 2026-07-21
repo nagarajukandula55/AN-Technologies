@@ -7,8 +7,6 @@ export async function POST(req: Request) {
   const { tool } = (await req.json()) as { tool: string };
 
   if (!session?.user?.id) {
-    // Anonymous users get a generous but unmetered client-side trial;
-    // real enforcement only applies once they're signed in.
     return NextResponse.json({ allowed: true, tier: "ANON" });
   }
 

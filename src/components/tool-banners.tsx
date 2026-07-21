@@ -4,25 +4,27 @@ import type { Tier } from "@/hooks/use-tier";
 export function FreeTierNotice({ tier, toolLabel }: { tier: Tier; toolLabel: string }) {
   if (tier !== "FREE") return null;
   return (
-    <p className="mt-2 text-sm text-amber-600">
-      Free plan: 3 {toolLabel}/day, watermarked output.{" "}
-      <Link href="/pricing" className="underline">
-        Upgrade for unlimited, watermark-free access
-      </Link>
-      .
-    </p>
+    <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+      <p className="text-sm text-blue-900">
+        <strong>Free tier:</strong> Limited to 3 {toolLabel} per day.{" "}
+        <Link href="/billing" className="font-semibold underline hover:no-underline">
+          Upgrade to Pro
+        </Link>
+        {" "}for unlimited usage.
+      </p>
+    </div>
   );
 }
 
 export function LimitReachedBanner() {
   return (
-    <div className="mt-6 rounded-lg border border-amber-300 bg-amber-50 p-4">
-      <p className="text-sm text-amber-800">
-        You&apos;ve hit today&apos;s free limit for this tool.{" "}
-        <Link href="/pricing" className="font-medium underline">
+    <div className="mt-6 rounded-lg border border-orange-200 bg-orange-50 p-4">
+      <p className="text-sm text-orange-900">
+        <strong>Daily limit reached.</strong> You&apos;ve used your 3 free uses today.{" "}
+        <Link href="/billing" className="font-semibold underline hover:no-underline">
           Upgrade to Pro
-        </Link>{" "}
-        for unlimited access.
+        </Link>
+        {" "}to continue using this tool.
       </p>
     </div>
   );

@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 const FREE_DAILY_LIMIT = 3;
@@ -78,4 +79,10 @@ export async function setConsent(
       : { granted: false, revokedAt: now },
     create: { userId, purpose, granted, grantedAt: granted ? now : null, revokedAt: granted ? null : now },
   });
+}
+
+export async function requireBusinessTier(userId: string) {
+  const tier = await getUserTier(userId);
+  if (tier === "PRO" || tier === "BUSINESS") return null;
+  return NextResponse.json({ error: "This feature requires a Pro or Business plan" }, { status: 403 });
 }
